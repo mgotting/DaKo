@@ -148,6 +148,7 @@ public class AdvancedChatWorkerThreadImpl extends AbstractWorkerThread {
 	//MGo: Methode, die empfangene Confirm Nachricht bearbeitet
 	protected void loginConfirmAction(ChatPDU receivedPdu){
 		//TODO ausprogrammieren, Client von dem PDU kommt aus Warteliste des Request Clients löschen
+		//deleteClient(receivedPdu.getUserName());
 	}
 
 	@Override
