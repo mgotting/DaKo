@@ -1,4 +1,3 @@
-//test
 package edu.hm.dako.chat.benchmarking;
 
 import java.text.SimpleDateFormat;
