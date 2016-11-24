@@ -9,7 +9,8 @@ import edu.hm.dako.chat.common.ExceptionHandler;
 import edu.hm.dako.chat.connection.Connection;
 
 /**
- * Thread wartet auf ankommende Nachrichten vom Server und bearbeitet diese. Kopie von SimpleMessageListenerThreadImpl von Gotti.
+ * Thread wartet auf ankommende Nachrichten vom Server und bearbeitet diese.
+ * Kopie von SimpleMessageListenerThreadImpl von Gotti.
  * 
  * @author Peter Mandl
  *
@@ -140,7 +141,15 @@ public class AdvancedMessageListenerThreadImpl extends AbstractMessageListenerTh
 		sharedClientData.eventCounter.getAndIncrement();
 
 		// Empfangene Chat-Nachricht an User Interface zur
-		// Darstellung uebergeben
+		// Darstellung uebergeben++
+		ChatPDU ConfirmPDU = ChatPDU.createChatMessageEventConfirm(sharedClientData.userName,
+				receivedPdu);
+		try {
+			connection.send(ConfirmPDU);
+		} catch (Exception e) {
+			log.debug("Senden der Confirm-Nachricht nicht moeglich");
+			// throw new IOException();
+		}
 		userInterface.setMessageLine(receivedPdu.getEventUserName(),
 				(String) receivedPdu.getMessage());
 	}
