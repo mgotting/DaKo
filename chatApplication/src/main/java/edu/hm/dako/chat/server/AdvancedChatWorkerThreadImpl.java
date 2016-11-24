@@ -15,7 +15,8 @@ import edu.hm.dako.chat.connection.EndOfFileException;
 
 /**
  * Worker-Thread zur serverseitigen Bedienung einer Session mit einem Client.
- * Jedem Chat-Client wird serverseitig ein Worker-Thread zugeordnet. Kopie Simple von Gotti
+ * Jedem Chat-Client wird serverseitig ein Worker-Thread zugeordnet. Kopie
+ * Simple von Gotti
  * 
  * @author
  *
@@ -419,6 +420,10 @@ public class AdvancedChatWorkerThreadImpl extends AbstractWorkerThread {
 			case LOGOUT_REQUEST:
 				// Logout-Request vom Client empfangen
 				logoutRequestAction(receivedPdu);
+				break;
+			case CHAT_MESSAGE_RESPONSE:
+				// Message Response vom Client empfangen
+
 				break;
 
 			default:
