@@ -140,8 +140,8 @@ public class AdvancedMessageListenerThreadImpl extends AbstractMessageListenerTh
 		// Eventzaehler fuer Testzwecke erhoehen
 		sharedClientData.eventCounter.getAndIncrement();
 
-		// Empfangene Chat-Nachricht an User Interface zur
-		// Darstellung uebergeben++
+		// ConfirmPDU erzeugen und Senden M.K.
+
 		ChatPDU ConfirmPDU = ChatPDU.createChatMessageEventConfirm(sharedClientData.userName,
 				receivedPdu);
 		try {
@@ -150,6 +150,9 @@ public class AdvancedMessageListenerThreadImpl extends AbstractMessageListenerTh
 			log.debug("Senden der Confirm-Nachricht nicht moeglich");
 			// throw new IOException();
 		}
+
+		// Empfangene Chat-Nachricht an User Interface zur
+		// Darstellung uebergeben++
 		userInterface.setMessageLine(receivedPdu.getEventUserName(),
 				(String) receivedPdu.getMessage());
 	}
