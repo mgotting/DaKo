@@ -144,11 +144,12 @@ public class AdvancedChatWorkerThreadImpl extends AbstractWorkerThread {
 			}
 		}
 	}
-	
-	//MGo: Methode, die empfangene Confirm Nachricht bearbeitet
-	protected void loginConfirmAction(ChatPDU receivedPdu){
-		//TODO ausprogrammieren, Client von dem PDU kommt aus Warteliste des Request Clients löschen
-		//bdeleteClient(receivedPdu.getUserName());
+
+	// MGo: Methode, die empfangene Confirm Nachricht bearbeitet
+	protected void loginConfirmAction(ChatPDU receivedPdu) {
+		// TODO ausprogrammieren, Client von dem PDU kommt aus Warteliste des
+		// Request Clients löschen
+		// bdeleteClient(receivedPdu.getUserName());
 	}
 
 	@Override
@@ -412,9 +413,9 @@ public class AdvancedChatWorkerThreadImpl extends AbstractWorkerThread {
 		// Empfangene Nachricht bearbeiten
 		try {
 			switch (receivedPdu.getPduType()) {
-			
+
 			case LOGIN_EVENT_CONFIRM:
-				//MGo: Login-Confirm vom Client empfangen
+				// MGo: Login-Confirm vom Client empfangen
 				loginConfirmAction(receivedPdu);
 				break;
 
@@ -434,7 +435,7 @@ public class AdvancedChatWorkerThreadImpl extends AbstractWorkerThread {
 				break;
 			case CHAT_MESSAGE_RESPONSE:
 				// Message Response vom Client empfangen
-
+				chatMessageResponseAction(receivedPdu);
 				break;
 
 			default:
@@ -446,5 +447,20 @@ public class AdvancedChatWorkerThreadImpl extends AbstractWorkerThread {
 			log.error("Exception bei der Nachrichtenverarbeitung");
 			ExceptionHandler.logExceptionAndTerminate(e);
 		}
+	}
+
+	private void chatMessageResponseAction(ChatPDU receivedPdu) {
+		// TODO Auto-generated method stub
+		// Three Steps to win !
+		// Delete Client from List
+		clients.deleteWaitListEntry(receivedPdu.getUserName(), entryName);
+		// Proof Client List length  AND Delete List if list is empty.
+		if (clients.getWaitListSize(userName) == 0) {
+			clients.deleteWaitList(userName);
+			ChatPDU respPDU = createChatMessageResponsePdu();
+			co
+		}
+		else {};
+		
 	}
 }
