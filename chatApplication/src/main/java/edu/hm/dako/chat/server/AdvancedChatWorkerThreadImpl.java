@@ -449,18 +449,19 @@ public class AdvancedChatWorkerThreadImpl extends AbstractWorkerThread {
 		}
 	}
 
+	// CREATED BY Matze K aus M // NOT Finisched!!
 	private void chatMessageResponseAction(ChatPDU receivedPdu) {
 		// TODO Auto-generated method stub
 		// Three Steps to win !
 		// Delete Client from List
 		clients.deleteWaitListEntry(receivedPdu.getUserName(), entryName);
-		// Proof Client List length  AND Delete List if list is empty.
+		// Proof Client List length AND Delete List if list is empty.
 		if (clients.getWaitListSize(userName) == 0) {
 			clients.deleteWaitList(userName);
 			ChatPDU respPDU = createChatMessageResponsePdu();
-			co
+		} else {
 		}
-		else {};
-		
+		;
+
 	}
 }
