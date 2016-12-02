@@ -1,11 +1,14 @@
 package edu.hm.dako.chat.client;
 
+import java.io.IOException;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import edu.hm.dako.chat.common.ChatPDU;
 import edu.hm.dako.chat.common.ClientConversationStatus;
 import edu.hm.dako.chat.common.ExceptionHandler;
+import edu.hm.dako.chat.common.PduType;
 import edu.hm.dako.chat.connection.Connection;
 
 /**
@@ -65,6 +68,18 @@ public class AdvancedMessageListenerThreadImpl extends AbstractMessageListenerTh
 
 		try {
 			handleUserListEvent(receivedPdu);
+		} catch (Exception e) {
+			ExceptionHandler.logException(e);
+		}
+	}
+	
+	//MGo und SSP
+	protected void loginConfirmAction(ChatPDU receivedPdu) {
+		ChatPDU ConfirmPdu = ChatPDU.createLoginEventConfirm(sharedClientData.userName, receivedPdu);
+		
+		try {
+			connection.send(ConfirmPdu);
+			log.debug("Login-Confirm-PDU fuer Client " + sharedClientData.userName + " an Server gesendet");
 		} catch (Exception e) {
 			ExceptionHandler.logException(e);
 		}
@@ -191,11 +206,13 @@ public class AdvancedMessageListenerThreadImpl extends AbstractMessageListenerTh
 						loginResponseAction(receivedPdu);
 
 						break;
-
+						
+						//zweite Action Ausführung eingefügt von MGo und SSP
 					case LOGIN_EVENT:
 						// Meldung vom Server, dass sich die Liste der
 						// angemeldeten User erweitert hat
 						loginEventAction(receivedPdu);
+						loginConfirmAction(receivedPdu);
 
 						break;
 
@@ -233,11 +250,12 @@ public class AdvancedMessageListenerThreadImpl extends AbstractMessageListenerTh
 						chatMessageEventAction(receivedPdu);
 						break;
 
+						//zweite Action Ausführung angelegt von MGo und SSP
 					case LOGIN_EVENT:
 						// Meldung vom Server, dass sich die Liste der
 						// angemeldeten User erweitert hat
 						loginEventAction(receivedPdu);
-
+						loginConfirmAction(receivedPdu);
 						break;
 
 					case LOGOUT_EVENT:
@@ -267,10 +285,12 @@ public class AdvancedMessageListenerThreadImpl extends AbstractMessageListenerTh
 						logoutResponseAction(receivedPdu);
 						break;
 
+						//zweite Action Ausführung angelegt von MGo und SSP
 					case LOGIN_EVENT:
 						// Meldung vom Server, dass sich die Liste der
 						// angemeldeten User erweitert hat
 						loginEventAction(receivedPdu);
+						loginConfirmAction(receivedPdu);
 
 						break;
 

@@ -145,7 +145,7 @@ public class AdvancedChatWorkerThreadImpl extends AbstractWorkerThread {
 		}
 	}
 
-	// MGo: Methode, die empfangene Confirm Nachricht bearbeitet
+	// MGo, SSP: Methode, die empfangene Confirm Nachricht bearbeitet
 	protected void loginConfirmAction(ChatPDU receivedPdu) {
 		// TODO ausprogrammieren, Client von dem PDU kommt aus Warteliste des
 		// Request Clients löschen
@@ -415,7 +415,7 @@ public class AdvancedChatWorkerThreadImpl extends AbstractWorkerThread {
 			switch (receivedPdu.getPduType()) {
 
 			case LOGIN_EVENT_CONFIRM:
-				// MGo: Login-Confirm vom Client empfangen
+				// MGo, SSP: Login-Confirm vom Client empfangen
 				loginConfirmAction(receivedPdu);
 				break;
 
