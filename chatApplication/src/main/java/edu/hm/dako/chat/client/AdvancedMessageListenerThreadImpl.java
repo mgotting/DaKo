@@ -13,14 +13,14 @@ import edu.hm.dako.chat.connection.Connection;
 
 /**
  * Thread wartet auf ankommende Nachrichten vom Server und bearbeitet diese.
- * Kopie von SimpleMessageListenerThreadImpl von Gotti.
+ * Kopie von AdvancedMessageListenerThreadImpl von Gotti.
  * 
  * @author Peter Mandl
  *
  */
 public class AdvancedMessageListenerThreadImpl extends AbstractMessageListenerThread {
 
-	private static Log log = LogFactory.getLog(SimpleMessageListenerThreadImpl.class);
+	private static Log log = LogFactory.getLog(AdvancedMessageListenerThreadImpl.class);
 
 	public AdvancedMessageListenerThreadImpl(ClientUserInterface userInterface,
 			Connection con, SharedClientData sharedData) {
@@ -75,7 +75,7 @@ public class AdvancedMessageListenerThreadImpl extends AbstractMessageListenerTh
 	
 	//MGo und SSP
 	protected void loginConfirmAction(ChatPDU receivedPdu) {
-		ChatPDU ConfirmPdu = ChatPDU.createLoginEventConfirm(sharedClientData.userName, receivedPdu);
+		ChatPDU ConfirmPdu = ChatPDU.createLoginEventConfirm(receivedPdu.getUserName(), receivedPdu);
 		
 		try {
 			connection.send(ConfirmPdu);
@@ -179,7 +179,7 @@ public class AdvancedMessageListenerThreadImpl extends AbstractMessageListenerTh
 
 		ChatPDU receivedPdu = null;
 
-		log.debug("SimpleMessageListenerThread gestartet");
+		log.debug("AdvancedMessageListenerThread gestartet");
 
 		while (!finished) {
 
@@ -326,7 +326,7 @@ public class AdvancedMessageListenerThreadImpl extends AbstractMessageListenerTh
 		} catch (Exception e) {
 			ExceptionHandler.logException(e);
 		}
-		log.debug("Ordnungsgemaesses Ende des SimpleMessageListener-Threads fuer User"
+		log.debug("Ordnungsgemaesses Ende des AdvancedMessageListener-Threads fuer User"
 				+ sharedClientData.userName + ", Status: " + sharedClientData.status);
 	} // run
 

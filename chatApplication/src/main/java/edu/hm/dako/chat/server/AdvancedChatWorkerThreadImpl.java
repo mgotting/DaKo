@@ -16,7 +16,7 @@ import edu.hm.dako.chat.connection.EndOfFileException;
 /**
  * Worker-Thread zur serverseitigen Bedienung einer Session mit einem Client.
  * Jedem Chat-Client wird serverseitig ein Worker-Thread zugeordnet. Kopie
- * Simple von Gotti
+ * Advanced von Gotti
  * 
  * @author
  *
@@ -24,7 +24,7 @@ import edu.hm.dako.chat.connection.EndOfFileException;
 
 public class AdvancedChatWorkerThreadImpl extends AbstractWorkerThread {
 
-	private static Log log = LogFactory.getLog(SimpleChatWorkerThreadImpl.class);
+	private static Log log = LogFactory.getLog(AdvancedChatWorkerThreadImpl.class);
 
 	public AdvancedChatWorkerThreadImpl(Connection con, SharedChatClientList clients,
 			SharedServerCounter counter, ChatServerGuiInterface serverGuiInterface) {
@@ -115,8 +115,11 @@ public class AdvancedChatWorkerThreadImpl extends AbstractWorkerThread {
 
 			// Login Response senden
 			ChatPDU responsePdu = ChatPDU.createLoginResponsePdu(userName, receivedPdu);
+			//MGo und SSP eingefügt, dass eine WaitList je Client erstellt wird.
+			clients.createWaitList(userName);
 
 			try {
+				//MGo und SSP: Response erst versenden, wenn Waitlist abgearbeitet
 				clients.getClient(userName).getConnection().send(responsePdu);
 			} catch (Exception e) {
 				log.debug("Senden einer Login-Response-PDU an " + userName + " fehlgeschlagen");
@@ -149,7 +152,7 @@ public class AdvancedChatWorkerThreadImpl extends AbstractWorkerThread {
 	protected void loginConfirmAction(ChatPDU receivedPdu) {
 		// TODO ausprogrammieren, Client von dem PDU kommt aus Warteliste des
 		// Request Clients löschen
-		// bdeleteClient(receivedPdu.getUserName());
+		clients.deleteWaitListEntry(receivedPdu.getEventUserName(), receivedPdu.getUserName());
 	}
 
 	@Override

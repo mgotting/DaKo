@@ -19,14 +19,14 @@ import javafx.concurrent.Task;
  * Advanced-Chat-Server-Implementierung Der ChatServer wird in einem eigenen
  * Thread gestartet. Er nimmt alle Verbindungsaufbauwuensche der ChatClients
  * entgegen und startet fuer jede Verbindung jeweils einen eigenen Worker-Thread
- * Kopie simple Chat von Gotti
+ * Kopie Advanced Chat von Gotti
  *
  * @author
  */
 
 public class AdvancedChatServerImpl extends AbstractChatServer {
 
-	private static Log log = LogFactory.getLog(SimpleChatServerImpl.class);
+	private static Log log = LogFactory.getLog(AdvancedChatServerImpl.class);
 
 	// Threadpool fuer Worker-Threads
 	private final ExecutorService executorService;
@@ -44,7 +44,7 @@ public class AdvancedChatServerImpl extends AbstractChatServer {
 	 */
 	public AdvancedChatServerImpl(ExecutorService executorService,
 			ServerSocketInterface socket, ChatServerGuiInterface serverGuiInterface) {
-		log.debug("SimpleChatServerImpl konstruiert");
+		log.debug("AdvancedChatServerImpl konstruiert");
 		this.executorService = executorService;
 		this.socket = socket;
 		this.serverGuiInterface = serverGuiInterface;
@@ -66,13 +66,13 @@ public class AdvancedChatServerImpl extends AbstractChatServer {
 					try {
 						// Auf ankommende Verbindungsaufbauwuensche warten
 						System.out.println(
-								"SimpleChatServer wartet auf Verbindungsanfragen von Clients...");
+								"AdvancedChatServer wartet auf Verbindungsanfragen von Clients...");
 
 						Connection connection = socket.accept();
 						log.debug("Neuer Verbindungsaufbauwunsch empfangen");
 
 						// Neuen Workerthread starten
-						executorService.submit(new SimpleChatWorkerThreadImpl(connection, clients,
+						executorService.submit(new AdvancedChatWorkerThreadImpl(connection, clients,
 								counter, serverGuiInterface));
 					} catch (Exception e) {
 						if (socket.isClosed()) {
@@ -121,6 +121,6 @@ public class AdvancedChatServerImpl extends AbstractChatServer {
 		executorService.shutdown();
 		log.debug("Threadpool freigegeben");
 
-		System.out.println("SimpleChatServer beendet sich");
+		System.out.println("AdvancedChatServer beendet sich");
 	}
 }
