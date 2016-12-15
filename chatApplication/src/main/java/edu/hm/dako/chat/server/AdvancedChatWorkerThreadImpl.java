@@ -136,9 +136,9 @@ public class AdvancedChatWorkerThreadImpl extends AbstractWorkerThread {
 	}
 
 	// MGo, SSP: Methode, die empfangene Confirm Nachricht bearbeitet
+	
 	protected void loginConfirmAction(ChatPDU receivedPdu) {
-		//ausprogrammieren, Client von dem PDU kommt aus Warteliste des
-		// Request Clients löschen
+		//Client von dem PDU kommt aus Warteliste des Request Clients löschen
 		clients.deleteWaitListEntry(receivedPdu.getEventUserName(), receivedPdu.getUserName());
 		if(clients.getWaitListSize(receivedPdu.getEventUserName())==0){
 			// Login Response senden
