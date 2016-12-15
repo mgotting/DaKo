@@ -114,6 +114,18 @@ public class AdvancedMessageListenerThreadImpl extends AbstractMessageListenerTh
 			ExceptionHandler.logException(e);
 		}
 	}
+	
+	//RT
+	protected void logoutConfirmAction(ChatPDU receivedPdu) {
+		ChatPDU ConfirmPdu = ChatPDU.createLogoutEventConfirm(receivedPdu.getUserName(), receivedPdu);
+		
+		try {
+			connection.send(ConfirmPdu);
+			log.debug("Logout-Confirm-PDU fuer Client " + sharedClientData.userName + " an Server gesendet");
+		} catch (Exception e) {
+			ExceptionHandler.logException(e);
+		}
+	}
 
 	@Override
 	protected void chatMessageResponseAction(ChatPDU receivedPdu) {
@@ -220,6 +232,7 @@ public class AdvancedMessageListenerThreadImpl extends AbstractMessageListenerTh
 						// Meldung vom Server, dass sich die Liste der
 						// angemeldeten User veraendert hat
 						logoutEventAction(receivedPdu);
+						logoutConfirmAction(receivedPdu); 
 
 						break;
 
@@ -262,7 +275,7 @@ public class AdvancedMessageListenerThreadImpl extends AbstractMessageListenerTh
 						// Meldung vom Server, dass sich die Liste der
 						// angemeldeten User veraendert hat
 						logoutEventAction(receivedPdu);
-
+						logoutConfirmAction(receivedPdu); 
 						break;
 
 					default:
@@ -298,7 +311,7 @@ public class AdvancedMessageListenerThreadImpl extends AbstractMessageListenerTh
 						// Meldung vom Server, dass sich die Liste der
 						// angemeldeten User veraendert hat
 						logoutEventAction(receivedPdu);
-
+						logoutConfirmAction(receivedPdu); 
 						break;
 
 					default:
