@@ -75,10 +75,10 @@ public class AdvancedMessageListenerThreadImpl extends AbstractMessageListenerTh
 	
 	//MGo und SSP
 	protected void loginConfirmAction(ChatPDU receivedPdu) {
-		ChatPDU ConfirmPdu = ChatPDU.createLoginEventConfirm(receivedPdu.getUserName(), receivedPdu);
+		ChatPDU confirmPdu = ChatPDU.createLoginEventConfirm(receivedPdu.getUserName(), receivedPdu);
 		
 		try {
-			connection.send(ConfirmPdu);
+			connection.send(confirmPdu);
 			log.debug("Login-Confirm-PDU fuer Client " + sharedClientData.userName + " an Server gesendet");
 		} catch (Exception e) {
 			ExceptionHandler.logException(e);

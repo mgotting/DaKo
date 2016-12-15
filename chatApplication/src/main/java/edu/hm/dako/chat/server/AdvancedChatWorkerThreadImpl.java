@@ -112,24 +112,11 @@ public class AdvancedChatWorkerThreadImpl extends AbstractWorkerThread {
 			// anfragenden) senden
 			pdu = ChatPDU.createLoginEventPdu(userName, receivedPdu);
 			sendLoginListUpdateEvent(pdu);
-
-			// Login Response senden
-			ChatPDU responsePdu = ChatPDU.createLoginResponsePdu(userName, receivedPdu);
+			
 			//MGo und SSP eingefügt, dass eine WaitList je Client erstellt wird.
 			clients.createWaitList(userName);
-
-			try {
-				//MGo und SSP: Response erst versenden, wenn Waitlist abgearbeitet
-				clients.getClient(userName).getConnection().send(responsePdu);
-			} catch (Exception e) {
-				log.debug("Senden einer Login-Response-PDU an " + userName + " fehlgeschlagen");
-				log.debug("Exception Message: " + e.getMessage());
-			}
-
-			log.debug("Login-Response-PDU an Client " + userName + " gesendet");
-
-			// Zustand des Clients aendern
-			clients.changeClientStatus(userName, ClientConversationStatus.REGISTERED);
+			
+			//Ausgeschnitten: siehe loginConfirmAction
 
 		} else {
 			// User bereits angemeldet, Fehlermeldung an Client senden,
@@ -150,9 +137,27 @@ public class AdvancedChatWorkerThreadImpl extends AbstractWorkerThread {
 
 	// MGo, SSP: Methode, die empfangene Confirm Nachricht bearbeitet
 	protected void loginConfirmAction(ChatPDU receivedPdu) {
-		// TODO ausprogrammieren, Client von dem PDU kommt aus Warteliste des
+		//ausprogrammieren, Client von dem PDU kommt aus Warteliste des
 		// Request Clients löschen
 		clients.deleteWaitListEntry(receivedPdu.getEventUserName(), receivedPdu.getUserName());
+		if(clients.getWaitListSize(receivedPdu.getEventUserName())==0){
+			// Login Response senden
+			ChatPDU responsePdu = ChatPDU.createLoginResponsePdu(receivedPdu.getEventUserName(), receivedPdu);
+			
+
+			try {
+				//MGo und SSP: Response erst versenden, wenn Waitlist abgearbeitet
+				clients.getClient(userName).getConnection().send(responsePdu);
+			} catch (Exception e) {
+				log.debug("Senden einer Login-Response-PDU an " + receivedPdu.getEventUserName() + " fehlgeschlagen");
+				log.debug("Exception Message: " + e.getMessage());
+			}
+
+			log.debug("Login-Response-PDU an Client " + receivedPdu.getEventUserName() + " gesendet");
+
+			// Zustand des Clients aendern
+			clients.changeClientStatus(receivedPdu.getEventUserName(), ClientConversationStatus.REGISTERED);
+		}
 	}
 
 	@Override
@@ -276,6 +281,7 @@ public class AdvancedChatWorkerThreadImpl extends AbstractWorkerThread {
 					+ ": " + clients.size());
 		}
 
+		
 		try {
 			connection.close();
 		} catch (Exception e) {
