@@ -193,6 +193,30 @@ public class AdvancedChatWorkerThreadImpl extends AbstractWorkerThread {
 					+ receivedPdu.getUserName() + ": " + clients.size());
 		}
 	}
+	
+	protected void logoutConfirmAction(ChatPDU receivedPdu) {
+		//Client von dem PDU kommt aus Warteliste des Request Clients löschen
+		clients.deleteWaitListEntry(receivedPdu.getEventUserName(), receivedPdu.getUserName());
+		if(clients.getWaitListSize(receivedPdu.getEventUserName())==0){
+			// Logout Response senden
+			ChatPDU responsePdu = ChatPDU.createLogoutResponsePdu(receivedPdu.getEventUserName(), 0, 0, 0,
+					0, client.getNumberOfReceivedChatMessages(), clientThreadName);
+			
+
+			try {
+				
+				clients.getClient(userName).getConnection().send(responsePdu);
+			} catch (Exception e) {
+				log.debug("Senden einer Logout-Response-PDU an " + receivedPdu.getEventUserName() + " fehlgeschlagen");
+				log.debug("Exception Message: " + e.getMessage());
+			}
+
+			log.debug("Logout-Response-PDU an Client " + receivedPdu.getEventUserName() + " gesendet");
+
+			// Zustand des Clients aendern
+			clients.changeClientStatus(receivedPdu.getEventUserName(), ClientConversationStatus.UNREGISTERED);
+		}
+	}
 
 	@Override
 	protected void chatMessageRequestAction(ChatPDU receivedPdu) {
@@ -445,6 +469,10 @@ public class AdvancedChatWorkerThreadImpl extends AbstractWorkerThread {
 			case CHAT_MESSAGE_RESPONSE:
 				// Message Response vom Client empfangen
 				chatMessageResponseAction(receivedPdu);
+				break;
+				
+			case LOGOUT_EVENT_CONFIRM:
+				logoutConfirmAction(receivedPdu);
 				break;
 
 			default:
