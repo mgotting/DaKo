@@ -70,6 +70,7 @@ public class AdvancedChatWorkerThreadImpl extends AbstractWorkerThread {
 				if (client != null) {
 
 					client.getConnection().send(pdu);
+					System.out.println("Event geschickt an: "+client.getUserName()+" PDU: "+pdu.getPduType());
 					log.debug(
 							"Login- oder Logout-Event-PDU an " + client.getUserName() + " gesendet");
 					clients.incrNumberOfSentChatEvents(client.getUserName());
@@ -108,13 +109,13 @@ public class AdvancedChatWorkerThreadImpl extends AbstractWorkerThread {
 			log.debug("Laenge der Clientliste: " + clients.size());
 			serverGuiInterface.incrNumberOfLoggedInClients();
 
+			//MGo und SSP eingefügt, dass eine WaitList je Client erstellt wird.
+			clients.createWaitList(userName);
+			
 			// Login-Event an alle Clients (auch an den gerade aktuell
 			// anfragenden) senden
 			pdu = ChatPDU.createLoginEventPdu(userName, receivedPdu);
 			sendLoginListUpdateEvent(pdu);
-			
-			//MGo und SSP eingefügt, dass eine WaitList je Client erstellt wird.
-			clients.createWaitList(userName);
 			
 			//Ausgeschnitten: siehe loginConfirmAction
 
@@ -136,9 +137,9 @@ public class AdvancedChatWorkerThreadImpl extends AbstractWorkerThread {
 	}
 
 	// MGo, SSP: Methode, die empfangene Confirm Nachricht bearbeitet
-	
 	protected void loginConfirmAction(ChatPDU receivedPdu) {
 		//Client von dem PDU kommt aus Warteliste des Request Clients löschen
+		System.out.println(receivedPdu.getEventUserName()+" UserName: "+receivedPdu.getUserName());
 		clients.deleteWaitListEntry(receivedPdu.getEventUserName(), receivedPdu.getUserName());
 		if(clients.getWaitListSize(receivedPdu.getEventUserName())==0){
 			// Login Response senden
@@ -450,13 +451,15 @@ public class AdvancedChatWorkerThreadImpl extends AbstractWorkerThread {
 			case LOGIN_EVENT_CONFIRM:
 				// MGo, SSP: Login-Confirm vom Client empfangen
 				loginConfirmAction(receivedPdu);
+				System.out.println("Confirm erhalten von UserName: "+receivedPdu.getUserName()+" EventUserName: "+receivedPdu.getEventUserName());
 				break;
 
 			case LOGIN_REQUEST:
 				// Login-Request vom Client empfangen
 				loginRequestAction(receivedPdu);
+				System.out.println("Login Request erhalten von UserName: "+receivedPdu.getUserName()+" EventUserName: "+receivedPdu.getEventUserName());
 				break;
-
+				
 			case CHAT_MESSAGE_REQUEST:
 				// Chat-Nachricht angekommen, an alle verteilen
 				chatMessageRequestAction(receivedPdu);
