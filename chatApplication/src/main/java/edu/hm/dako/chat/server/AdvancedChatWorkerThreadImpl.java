@@ -347,12 +347,12 @@ public class AdvancedChatWorkerThreadImpl extends AbstractWorkerThread {
 			}
 
 			log.debug("Logout-Response-PDU an Client " + eventInitiatorClient + " gesendet");
-			try {
+			/*try {
 				connection.close();
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
-			}
+			}*/
 		}
 		
 	}
