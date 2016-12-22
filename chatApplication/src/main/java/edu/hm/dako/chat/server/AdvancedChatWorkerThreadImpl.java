@@ -138,6 +138,9 @@ public class AdvancedChatWorkerThreadImpl extends AbstractWorkerThread {
 
 	// MGo, SSP: Methode, die empfangene Confirm Nachricht bearbeitet
 	protected void loginConfirmAction(ChatPDU receivedPdu) {
+		//confirms zählen
+		clients.incrNumberOfReceivedChatEventConfirms(receivedPdu.getEventUserName()); //RT
+		
 		//Client von dem PDU kommt aus Warteliste des Request Clients löschen
 		System.out.println(receivedPdu.getEventUserName()+" UserName: "+receivedPdu.getUserName());
 		clients.deleteWaitListEntry(receivedPdu.getEventUserName(), receivedPdu.getUserName());
@@ -196,27 +199,27 @@ public class AdvancedChatWorkerThreadImpl extends AbstractWorkerThread {
 	}
 	
 	protected void logoutConfirmAction(ChatPDU receivedPdu) {
-		//Client von dem PDU kommt aus Warteliste des Request Clients löschen
-		clients.deleteWaitListEntry(receivedPdu.getEventUserName(), receivedPdu.getUserName());
-		if(clients.getWaitListSize(receivedPdu.getEventUserName())==0){
-			// Logout Response senden
-			ChatPDU responsePdu = ChatPDU.createLogoutResponsePdu(receivedPdu.getEventUserName(), 0, 0, 0,
-					0, client.getNumberOfReceivedChatMessages(), clientThreadName);
-			
-
-			try {
-				
-				clients.getClient(userName).getConnection().send(responsePdu);
-			} catch (Exception e) {
-				log.debug("Senden einer Logout-Response-PDU an " + receivedPdu.getEventUserName() + " fehlgeschlagen");
-				log.debug("Exception Message: " + e.getMessage());
+		//confirms hoch zählen
+		clients.incrNumberOfReceivedChatEventConfirms(receivedPdu.getEventUserName());
+		try {
+			// Client von dem PDU kommt aus Warteliste des Request Clients
+			// löschen
+			clients.deleteWaitListEntry(receivedPdu.getEventUserName(), receivedPdu.getUserName());
+			if (clients.getWaitListSize(receivedPdu.getEventUserName()) == 0) {
+				// Logout Response senden
+				sendLogoutResponse(receivedPdu.getEventUserName());
 			}
 
-			log.debug("Logout-Response-PDU an Client " + receivedPdu.getEventUserName() + " gesendet");
-
-			// Zustand des Clients aendern
-			clients.changeClientStatus(receivedPdu.getEventUserName(), ClientConversationStatus.UNREGISTERED);
+		} catch (Exception e) {
+			log.debug("Senden einer Logout-Response-PDU an " + receivedPdu.getEventUserName() + " fehlgeschlagen");
+			log.debug("Exception Message: " + e.getMessage());
 		}
+
+		log.debug("Logout-Response-PDU an Client " + receivedPdu.getEventUserName() + " gesendet");
+
+		// Zustand des Clients aendern
+		clients.changeClientStatus(receivedPdu.getEventUserName(), ClientConversationStatus.UNREGISTERED);
+
 	}
 
 	@Override
@@ -471,7 +474,7 @@ public class AdvancedChatWorkerThreadImpl extends AbstractWorkerThread {
 				break;
 			case CHAT_MESSAGE_RESPONSE:
 				// Message Response vom Client empfangen
-				chatMessageResponseAction(receivedPdu);
+				//chatMessageResponseAction(receivedPdu);
 				break;
 				
 			case LOGOUT_EVENT_CONFIRM:
@@ -490,7 +493,7 @@ public class AdvancedChatWorkerThreadImpl extends AbstractWorkerThread {
 	}
 
 	// CREATED BY Matze K aus M // NOT Finisched!!
-	private void chatMessageResponseAction(ChatPDU receivedPdu) {
+	/*private void chatMessageResponseAction(ChatPDU receivedPdu) {
 		// TODO Auto-generated method stub
 		// Three Steps to win !
 		// Delete Client from List
@@ -503,5 +506,5 @@ public class AdvancedChatWorkerThreadImpl extends AbstractWorkerThread {
 		}
 		;
 
-	}
+	}*/
 }

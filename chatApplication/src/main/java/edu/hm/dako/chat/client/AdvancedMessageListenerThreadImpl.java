@@ -71,6 +71,7 @@ public class AdvancedMessageListenerThreadImpl extends AbstractMessageListenerTh
 		} catch (Exception e) {
 			ExceptionHandler.logException(e);
 		}
+		//TODO loginConfirmAction (receivedPdu); 
 	}
 	
 	//MGo und SSP
@@ -117,7 +118,7 @@ public class AdvancedMessageListenerThreadImpl extends AbstractMessageListenerTh
 	
 	//RT
 	protected void logoutConfirmAction(ChatPDU receivedPdu) {
-		ChatPDU ConfirmPdu = ChatPDU.createLogoutEventConfirm(receivedPdu.getUserName(), receivedPdu);
+		ChatPDU ConfirmPdu = ChatPDU.createLogoutEventConfirm(sharedClientData.userName, receivedPdu);
 		
 		try {
 			connection.send(ConfirmPdu);
