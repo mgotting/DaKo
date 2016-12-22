@@ -198,6 +198,7 @@ public class AdvancedChatWorkerThreadImpl extends AbstractWorkerThread {
 		}
 	}
 	
+	//RT
 	protected void logoutConfirmAction(ChatPDU receivedPdu) {
 		//confirms hoch zählen
 		clients.incrNumberOfReceivedChatEventConfirms(receivedPdu.getEventUserName());
@@ -222,6 +223,7 @@ public class AdvancedChatWorkerThreadImpl extends AbstractWorkerThread {
 
 	}
 
+	
 	@Override
 	protected void chatMessageRequestAction(ChatPDU receivedPdu) {
 
@@ -329,8 +331,8 @@ public class AdvancedChatWorkerThreadImpl extends AbstractWorkerThread {
 		ClientListEntry client = clients.getClient(eventInitiatorClient);
 
 		if (client != null) {
-			ChatPDU responsePdu = ChatPDU.createLogoutResponsePdu(eventInitiatorClient, 0, 0, 0,
-					0, client.getNumberOfReceivedChatMessages(), clientThreadName);
+			ChatPDU responsePdu = ChatPDU.createLogoutResponsePdu(eventInitiatorClient, client.getNumberOfSentEvents(), client.getNumberOfLostEventConfirms(), client.getNumberOfReceivedEventConfirms(),
+					client.getNumberOfRetries(), client.getNumberOfReceivedChatMessages(), clientThreadName);
 
 			log.debug(eventInitiatorClient + ": SentEvents aus Clientliste: "
 					+ client.getNumberOfSentEvents() + ": ReceivedConfirms aus Clientliste: "
