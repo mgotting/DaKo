@@ -71,7 +71,7 @@ public class AdvancedMessageListenerThreadImpl extends AbstractMessageListenerTh
 		} catch (Exception e) {
 			ExceptionHandler.logException(e);
 		}
-		//TODO loginConfirmAction (receivedPdu); 
+		 
 	}
 	
 	//MGo und SSP

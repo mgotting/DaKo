@@ -78,9 +78,9 @@ public class LoggedInGuiController {
 		}
 
 		// Verbindung zum Server wird sicherheitshalber rnochmals abgebaut
-		appController.getCommunicator().cancelConnection();
+		
 
-		System.exit(0);
+		
 	}
 
 	public void btnSubmit_OnAction() {

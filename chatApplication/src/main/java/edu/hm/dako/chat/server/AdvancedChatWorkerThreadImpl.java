@@ -200,6 +200,7 @@ public class AdvancedChatWorkerThreadImpl extends AbstractWorkerThread {
 	
 	//RT
 	protected void logoutConfirmAction(ChatPDU receivedPdu) {
+		System.out.println("logoutconfirm empfangen");
 		//confirms hoch zählen
 		clients.incrNumberOfReceivedChatEventConfirms(receivedPdu.getEventUserName());
 		try {
@@ -346,7 +347,14 @@ public class AdvancedChatWorkerThreadImpl extends AbstractWorkerThread {
 			}
 
 			log.debug("Logout-Response-PDU an Client " + eventInitiatorClient + " gesendet");
+			try {
+				connection.close();
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
+		
 	}
 
 	/**
@@ -480,6 +488,7 @@ public class AdvancedChatWorkerThreadImpl extends AbstractWorkerThread {
 				break;
 				
 			case LOGOUT_EVENT_CONFIRM:
+				System.out.println("ist im case");
 				logoutConfirmAction(receivedPdu);
 				break;
 
