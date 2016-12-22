@@ -68,6 +68,7 @@ public class AdvancedMessageListenerThreadImpl extends AbstractMessageListenerTh
 
 		try {
 			handleUserListEvent(receivedPdu);
+			loginConfirmAction(receivedPdu);
 		} catch (Exception e) {
 			ExceptionHandler.logException(e);
 		}
@@ -304,7 +305,7 @@ public class AdvancedMessageListenerThreadImpl extends AbstractMessageListenerTh
 						// Meldung vom Server, dass sich die Liste der
 						// angemeldeten User erweitert hat
 						loginEventAction(receivedPdu);
-						loginConfirmAction(receivedPdu);
+						//loginConfirmAction(receivedPdu);
 
 						break;
 
