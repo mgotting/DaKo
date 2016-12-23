@@ -340,6 +340,7 @@ public class AdvancedChatWorkerThreadImpl extends AbstractWorkerThread {
 					+ client.getNumberOfReceivedEventConfirms());
 			try {
 				clients.getClient(eventInitiatorClient).getConnection().send(responsePdu);
+				
 			} catch (Exception e) {
 				log.debug("Senden einer Logout-Response-PDU an " + eventInitiatorClient
 						+ " fehlgeschlagen");
@@ -347,12 +348,7 @@ public class AdvancedChatWorkerThreadImpl extends AbstractWorkerThread {
 			}
 
 			log.debug("Logout-Response-PDU an Client " + eventInitiatorClient + " gesendet");
-			/*try {
-				connection.close();
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}*/
+			
 		}
 		
 	}
