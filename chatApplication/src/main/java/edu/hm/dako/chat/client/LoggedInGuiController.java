@@ -78,7 +78,7 @@ public class LoggedInGuiController {
 		}
 
 		// Verbindung zum Server wird sicherheitshalber rnochmals abgebaut
-		
+		System.exit(0);
 
 		
 	}

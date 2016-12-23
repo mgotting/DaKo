@@ -102,13 +102,11 @@ public class AdvancedMessageListenerThreadImpl extends AbstractMessageListenerTh
 
 		finished = true;
 		userInterface.logoutComplete();
-		try {
-			connection.close();
-						
-		} catch (Exception e) {
+		
 			
-			e.printStackTrace();
-		}
+			
+						
+	
 	}
 
 	@Override
