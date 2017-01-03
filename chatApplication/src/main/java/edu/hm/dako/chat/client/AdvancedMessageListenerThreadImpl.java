@@ -111,20 +111,21 @@ public class AdvancedMessageListenerThreadImpl extends AbstractMessageListenerTh
 
 	@Override
 	protected void logoutEventAction(ChatPDU receivedPdu) {
-
+		System.out.println("hat event bekommen");
 		// Eventzaehler fuer Testzwecke erhoehen
 		sharedClientData.eventCounter.getAndIncrement();
 
 		try {
 			handleUserListEvent(receivedPdu);
-			logoutConfirmAction(receivedPdu);
+			//sendlogoutConfirmAction(receivedPdu);
 		} catch (Exception e) {
 			ExceptionHandler.logException(e);
 		}
 	}
 	
 	//RT
-	protected void logoutConfirmAction(ChatPDU receivedPdu) {
+	protected void sendlogoutConfirmAction(ChatPDU receivedPdu) {
+		System.out.println("schickt logoutEventConfirm");
 		ChatPDU ConfirmPdu = ChatPDU.createLogoutEventConfirm(sharedClientData.userName, receivedPdu);
 		
 		try {
@@ -240,7 +241,7 @@ public class AdvancedMessageListenerThreadImpl extends AbstractMessageListenerTh
 						// Meldung vom Server, dass sich die Liste der
 						// angemeldeten User veraendert hat
 						logoutEventAction(receivedPdu);
-						logoutConfirmAction(receivedPdu); 
+						sendlogoutConfirmAction(receivedPdu); 
 
 						break;
 
@@ -283,7 +284,7 @@ public class AdvancedMessageListenerThreadImpl extends AbstractMessageListenerTh
 						// Meldung vom Server, dass sich die Liste der
 						// angemeldeten User veraendert hat
 						logoutEventAction(receivedPdu);
-						logoutConfirmAction(receivedPdu); 
+						sendlogoutConfirmAction(receivedPdu); 
 						break;
 
 					default:
@@ -311,7 +312,7 @@ public class AdvancedMessageListenerThreadImpl extends AbstractMessageListenerTh
 						// Meldung vom Server, dass sich die Liste der
 						// angemeldeten User erweitert hat
 						loginEventAction(receivedPdu);
-						//loginConfirmAction(receivedPdu);
+						loginConfirmAction(receivedPdu);
 
 						break;
 
@@ -319,7 +320,7 @@ public class AdvancedMessageListenerThreadImpl extends AbstractMessageListenerTh
 						// Meldung vom Server, dass sich die Liste der
 						// angemeldeten User veraendert hat
 						logoutEventAction(receivedPdu);
-						logoutConfirmAction(receivedPdu); 
+						sendlogoutConfirmAction(receivedPdu); 
 						break;
 
 					default:

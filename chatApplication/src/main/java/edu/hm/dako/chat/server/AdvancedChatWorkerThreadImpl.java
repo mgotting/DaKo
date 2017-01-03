@@ -166,7 +166,7 @@ public class AdvancedChatWorkerThreadImpl extends AbstractWorkerThread {
 
 	@Override
 	protected void logoutRequestAction(ChatPDU receivedPdu) {
-
+		System.out.println("bekommt logout-request");
 		ChatPDU pdu;
 		logoutCounter.getAndIncrement();
 		log.debug("Logout-Request von " + receivedPdu.getUserName() + ", LogoutCount = "
@@ -185,22 +185,33 @@ public class AdvancedChatWorkerThreadImpl extends AbstractWorkerThread {
 					ClientConversationStatus.UNREGISTERING);
 			sendLoginListUpdateEvent(pdu);
 			serverGuiInterface.decrNumberOfLoggedInClients();
+			
+			try {
+				connection.send(pdu);
+				log.debug("Logout-Event-PDU an " + receivedPdu.getUserName());
+						
+			} catch (Exception e) {
+				log.debug("Senden einer Logout-Event-PDU an " + receivedPdu.getUserName()
+						+ " nicth moeglich");
+				ExceptionHandler.logExceptionAndTerminate(e);
+			}
 
-			clients.changeClientStatus(receivedPdu.getUserName(),
-					ClientConversationStatus.UNREGISTERED);
+			//clients.changeClientStatus(receivedPdu.getUserName(),
+			//		ClientConversationStatus.UNREGISTERED);
 			// Logout Response senden
-			sendLogoutResponse(receivedPdu.getUserName());
+			//sendLogoutResponse(receivedPdu.getUserName());
 			// Worker-Thread des Clients, der den Logout-Request gesendet
 			// hat, auch gleich zum Beenden markieren
-			clients.finish(receivedPdu.getUserName());
-			log.debug("Laenge der Clientliste beim Vormerken zum Loeschen von "
-					+ receivedPdu.getUserName() + ": " + clients.size());
+//			clients.changeClientStatus(receivedPdu.getUserName(),
+//					ClientConversationStatus.UNREGISTERED);
+			
+			
 		}
 	}
 	
 	//RT
 	protected void logoutConfirmAction(ChatPDU receivedPdu) {
-		System.out.println("logoutconfirm empfangen");
+		System.out.println("ist in logoutConfirmAction");
 		//confirms hoch zählen
 		clients.incrNumberOfReceivedChatEventConfirms(receivedPdu.getEventUserName());
 		try {
@@ -210,6 +221,10 @@ public class AdvancedChatWorkerThreadImpl extends AbstractWorkerThread {
 			if (clients.getWaitListSize(receivedPdu.getEventUserName()) == 0) {
 				// Logout Response senden
 				sendLogoutResponse(receivedPdu.getEventUserName());
+				// Zustand des Clients aendern
+				clients.changeClientStatus(receivedPdu.getEventUserName(), ClientConversationStatus.UNREGISTERED);
+				clients.finish(receivedPdu.getEventUserName());
+				clients.deleteClient(receivedPdu.getEventUserName());
 			}
 
 		} catch (Exception e) {
@@ -219,8 +234,9 @@ public class AdvancedChatWorkerThreadImpl extends AbstractWorkerThread {
 
 		log.debug("Logout-Response-PDU an Client " + receivedPdu.getEventUserName() + " gesendet");
 
-		// Zustand des Clients aendern
-		clients.changeClientStatus(receivedPdu.getEventUserName(), ClientConversationStatus.UNREGISTERED);
+		
+		
+		
 
 	}
 
@@ -328,7 +344,7 @@ public class AdvancedChatWorkerThreadImpl extends AbstractWorkerThread {
 	 *          Name des Clients
 	 */
 	private void sendLogoutResponse(String eventInitiatorClient) {
-
+		System.out.println("sendet Response");
 		ClientListEntry client = clients.getClient(eventInitiatorClient);
 
 		if (client != null) {
@@ -338,9 +354,11 @@ public class AdvancedChatWorkerThreadImpl extends AbstractWorkerThread {
 			log.debug(eventInitiatorClient + ": SentEvents aus Clientliste: "
 					+ client.getNumberOfSentEvents() + ": ReceivedConfirms aus Clientliste: "
 					+ client.getNumberOfReceivedEventConfirms());
+			
+			
 			try {
 				clients.getClient(eventInitiatorClient).getConnection().send(responsePdu);
-				
+				System.out.println("response geschickt");
 			} catch (Exception e) {
 				log.debug("Senden einer Logout-Response-PDU an " + eventInitiatorClient
 						+ " fehlgeschlagen");
@@ -484,8 +502,8 @@ public class AdvancedChatWorkerThreadImpl extends AbstractWorkerThread {
 				break;
 				
 			case LOGOUT_EVENT_CONFIRM:
-				System.out.println("ist im case");
 				logoutConfirmAction(receivedPdu);
+				System.out.println("Logout-Confirm erhalten von UserName: "+receivedPdu.getUserName()+" EventUserName: "+receivedPdu.getEventUserName());
 				break;
 
 			default:
