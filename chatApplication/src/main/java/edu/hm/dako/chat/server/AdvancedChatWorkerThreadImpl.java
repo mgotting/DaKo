@@ -187,9 +187,11 @@ public class AdvancedChatWorkerThreadImpl extends AbstractWorkerThread {
 			// Event an Client versenden
 			pdu = ChatPDU.createLogoutEventPdu(userName, receivedPdu);
 
+			clients.createWaitList(receivedPdu.getUserName());
 			clients.changeClientStatus(receivedPdu.getUserName(),
 					ClientConversationStatus.UNREGISTERING);
 			sendLoginListUpdateEvent(pdu);
+<<<<<<< HEAD
 			serverGuiInterface.decrNumberOfLoggedInClients();
 
 			try {
@@ -204,6 +206,13 @@ public class AdvancedChatWorkerThreadImpl extends AbstractWorkerThread {
 
 			// clients.changeClientStatus(receivedPdu.getUserName(),
 			// ClientConversationStatus.UNREGISTERED);
+=======
+			
+			
+//			serverGuiInterface.decrNumberOfLoggedInClients();
+			//clients.changeClientStatus(receivedPdu.getUserName(),
+			//		ClientConversationStatus.UNREGISTERED);
+>>>>>>> branch 'master' of https://github.com/mgotting/DaKo.git
 			// Logout Response senden
 			// sendLogoutResponse(receivedPdu.getUserName());
 			// Worker-Thread des Clients, der den Logout-Request gesendet
@@ -231,7 +240,7 @@ public class AdvancedChatWorkerThreadImpl extends AbstractWorkerThread {
 				clients.changeClientStatus(receivedPdu.getEventUserName(),
 						ClientConversationStatus.UNREGISTERED);
 				clients.finish(receivedPdu.getEventUserName());
-				clients.deleteClient(receivedPdu.getEventUserName());
+//				clients.deleteClient(receivedPdu.getEventUserName());
 			}
 
 		} catch (Exception e) {
