@@ -149,9 +149,11 @@ public abstract class AbstractChatClient implements ClientCommunication {
 		requestPdu.setClientStatus(sharedClientData.status);
 		requestPdu.setClientThreadName(Thread.currentThread().getName());
 		requestPdu.setUserName(userName);
+		// MKaM --> EVentuell setzen des initatior namen Fehlt :setEventUserName
 		requestPdu.setMessage(text);
 		sharedClientData.messageCounter.getAndIncrement();
 		requestPdu.setSequenceNumber(sharedClientData.messageCounter.get());
+		System.out.println("Chat Nachricht versand ...");
 		try {
 			connection.send(requestPdu);
 			log.debug("Chat-Message-Request-PDU fuer Client " + name

@@ -1,14 +1,11 @@
 package edu.hm.dako.chat.client;
 
-import java.io.IOException;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import edu.hm.dako.chat.common.ChatPDU;
 import edu.hm.dako.chat.common.ClientConversationStatus;
 import edu.hm.dako.chat.common.ExceptionHandler;
-import edu.hm.dako.chat.common.PduType;
 import edu.hm.dako.chat.connection.Connection;
 
 /**
@@ -72,16 +69,18 @@ public class AdvancedMessageListenerThreadImpl extends AbstractMessageListenerTh
 		} catch (Exception e) {
 			ExceptionHandler.logException(e);
 		}
-		 
+
 	}
-	
-	//MGo und SSP
+
+	// MGo und SSP
 	protected void loginConfirmAction(ChatPDU receivedPdu) {
-		ChatPDU confirmPdu = ChatPDU.createLoginEventConfirm(sharedClientData.userName, receivedPdu);
-		
+		ChatPDU confirmPdu = ChatPDU.createLoginEventConfirm(sharedClientData.userName,
+				receivedPdu);
+
 		try {
 			connection.send(confirmPdu);
-			log.debug("Login-Confirm-PDU fuer Client " + sharedClientData.userName + " an Server gesendet");
+			log.debug("Login-Confirm-PDU fuer Client " + sharedClientData.userName
+					+ " an Server gesendet");
 		} catch (Exception e) {
 			ExceptionHandler.logException(e);
 		}
@@ -102,11 +101,7 @@ public class AdvancedMessageListenerThreadImpl extends AbstractMessageListenerTh
 
 		finished = true;
 		userInterface.logoutComplete();
-		
-			
-			
-						
-	
+
 	}
 
 	@Override
@@ -117,20 +112,22 @@ public class AdvancedMessageListenerThreadImpl extends AbstractMessageListenerTh
 
 		try {
 			handleUserListEvent(receivedPdu);
-			//sendlogoutConfirmAction(receivedPdu);
+			// sendlogoutConfirmAction(receivedPdu);
 		} catch (Exception e) {
 			ExceptionHandler.logException(e);
 		}
 	}
-	
-	//RT
+
+	// RT
 	protected void sendlogoutConfirmAction(ChatPDU receivedPdu) {
 		System.out.println("schickt logoutEventConfirm");
-		ChatPDU ConfirmPdu = ChatPDU.createLogoutEventConfirm(sharedClientData.userName, receivedPdu);
-		
+		ChatPDU ConfirmPdu = ChatPDU.createLogoutEventConfirm(sharedClientData.userName,
+				receivedPdu);
+
 		try {
 			connection.send(ConfirmPdu);
-			log.debug("Logout-Confirm-PDU fuer Client " + sharedClientData.userName + " an Server gesendet");
+			log.debug("Logout-Confirm-PDU fuer Client " + sharedClientData.userName
+					+ " an Server gesendet");
 		} catch (Exception e) {
 			ExceptionHandler.logException(e);
 		}
@@ -138,6 +135,7 @@ public class AdvancedMessageListenerThreadImpl extends AbstractMessageListenerTh
 
 	@Override
 	protected void chatMessageResponseAction(ChatPDU receivedPdu) {
+		System.out.println("Response erhalten bearbeitung beended");
 
 		log.debug("Sequenznummer der Chat-Response-PDU " + receivedPdu.getUserName() + ": "
 				+ receivedPdu.getSequenceNumber() + ", Messagecounter: "
@@ -177,12 +175,16 @@ public class AdvancedMessageListenerThreadImpl extends AbstractMessageListenerTh
 		sharedClientData.eventCounter.getAndIncrement();
 
 		// ConfirmPDU erzeugen und Senden M.K.
-
+		System.out.println("Nachricht vom Server erhalten" + sharedClientData.userName
+				+ receivedPdu.getUserName());
 		ChatPDU ConfirmPDU = ChatPDU.createChatMessageEventConfirm(sharedClientData.userName,
 				receivedPdu);
+		System.out
+				.println("Fertig erstellte Confirm PDU  von :" + ConfirmPDU.getEventUserName());
 		try {
 			connection.send(ConfirmPDU);
 		} catch (Exception e) {
+			System.out.println("Confirm PDU - Senden nicht möglich");
 			log.debug("Senden der Confirm-Nachricht nicht moeglich");
 			// throw new IOException();
 		}
@@ -227,8 +229,8 @@ public class AdvancedMessageListenerThreadImpl extends AbstractMessageListenerTh
 						loginResponseAction(receivedPdu);
 
 						break;
-						
-						//zweite Action Ausführung eingefügt von MGo und SSP
+
+					// zweite Action Ausführung eingefügt von MGo und SSP
 					case LOGIN_EVENT:
 						// Meldung vom Server, dass sich die Liste der
 						// angemeldeten User erweitert hat
@@ -241,7 +243,7 @@ public class AdvancedMessageListenerThreadImpl extends AbstractMessageListenerTh
 						// Meldung vom Server, dass sich die Liste der
 						// angemeldeten User veraendert hat
 						logoutEventAction(receivedPdu);
-						sendlogoutConfirmAction(receivedPdu); 
+						sendlogoutConfirmAction(receivedPdu);
 
 						break;
 
@@ -272,7 +274,7 @@ public class AdvancedMessageListenerThreadImpl extends AbstractMessageListenerTh
 						chatMessageEventAction(receivedPdu);
 						break;
 
-						//zweite Action Ausführung angelegt von MGo und SSP
+					// zweite Action Ausführung angelegt von MGo und SSP
 					case LOGIN_EVENT:
 						// Meldung vom Server, dass sich die Liste der
 						// angemeldeten User erweitert hat
@@ -284,7 +286,7 @@ public class AdvancedMessageListenerThreadImpl extends AbstractMessageListenerTh
 						// Meldung vom Server, dass sich die Liste der
 						// angemeldeten User veraendert hat
 						logoutEventAction(receivedPdu);
-						sendlogoutConfirmAction(receivedPdu); 
+						sendlogoutConfirmAction(receivedPdu);
 						break;
 
 					default:
@@ -307,7 +309,7 @@ public class AdvancedMessageListenerThreadImpl extends AbstractMessageListenerTh
 						logoutResponseAction(receivedPdu);
 						break;
 
-						//zweite Action Ausführung angelegt von MGo und SSP
+					// zweite Action Ausführung angelegt von MGo und SSP
 					case LOGIN_EVENT:
 						// Meldung vom Server, dass sich die Liste der
 						// angemeldeten User erweitert hat
@@ -320,7 +322,7 @@ public class AdvancedMessageListenerThreadImpl extends AbstractMessageListenerTh
 						// Meldung vom Server, dass sich die Liste der
 						// angemeldeten User veraendert hat
 						logoutEventAction(receivedPdu);
-						sendlogoutConfirmAction(receivedPdu); 
+						sendlogoutConfirmAction(receivedPdu);
 						break;
 
 					default:
