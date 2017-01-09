@@ -263,8 +263,12 @@ public class AdvancedChatWorkerThreadImpl extends AbstractWorkerThread {
 		if (!clients.existsClient(receivedPdu.getUserName())) {
 			log.debug("User nicht in Clientliste: " + receivedPdu.getUserName());
 		} else {
+			// zuerst Waitlist erstellen mit registering und registered clients
+			clients.createWaitList(receivedPdu.getUserName());
+			System.out.println(
+					"Waitlist erstellt mit:" + clients.getWaitListSize(receivedPdu.getUserName()));
 			// Liste der betroffenen Clients ermitteln
-			Vector<String> sendList = clients.getClientNameList();
+			Vector<String> sendList = clients.getRegisteredClientNameList();
 			ChatPDU pdu = ChatPDU.createChatMessageEventPdu(userName, receivedPdu);
 
 			// Event an Clients senden
@@ -539,10 +543,11 @@ public class AdvancedChatWorkerThreadImpl extends AbstractWorkerThread {
 		// TODO
 		// Three Steps to win !
 		// Delete Client from List
-		clients.deleteWaitListEntry(receivedPdu.getUserName(),
-				receivedPdu.getEventUserName());
+		clients.deleteWaitListEntry(receivedPdu.getEventUserName(),
+				receivedPdu.getUserName());
 
 		// Proof Client List length AND Delete List if list is empty.
+		System.out.println(clients.getWaitListSize(receivedPdu.getEventUserName()));
 		if (clients.getWaitListSize(receivedPdu.getEventUserName()) == 0) {
 			clients.deleteWaitList(receivedPdu.getEventUserName());
 			client = clients.getClient(receivedPdu.getEventUserName());
