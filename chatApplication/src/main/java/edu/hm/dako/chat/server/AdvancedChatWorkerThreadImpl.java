@@ -181,21 +181,13 @@ public class AdvancedChatWorkerThreadImpl extends AbstractWorkerThread {
 			// Event an Client versenden
 			pdu = ChatPDU.createLogoutEventPdu(userName, receivedPdu);
 
+			clients.createWaitList(receivedPdu.getUserName());
 			clients.changeClientStatus(receivedPdu.getUserName(),
 					ClientConversationStatus.UNREGISTERING);
 			sendLoginListUpdateEvent(pdu);
-			serverGuiInterface.decrNumberOfLoggedInClients();
 			
-			try {
-				connection.send(pdu);
-				log.debug("Logout-Event-PDU an " + receivedPdu.getUserName());
-						
-			} catch (Exception e) {
-				log.debug("Senden einer Logout-Event-PDU an " + receivedPdu.getUserName()
-						+ " nicth moeglich");
-				ExceptionHandler.logExceptionAndTerminate(e);
-			}
-
+			
+//			serverGuiInterface.decrNumberOfLoggedInClients();
 			//clients.changeClientStatus(receivedPdu.getUserName(),
 			//		ClientConversationStatus.UNREGISTERED);
 			// Logout Response senden
@@ -224,7 +216,7 @@ public class AdvancedChatWorkerThreadImpl extends AbstractWorkerThread {
 				// Zustand des Clients aendern
 				clients.changeClientStatus(receivedPdu.getEventUserName(), ClientConversationStatus.UNREGISTERED);
 				clients.finish(receivedPdu.getEventUserName());
-				clients.deleteClient(receivedPdu.getEventUserName());
+//				clients.deleteClient(receivedPdu.getEventUserName());
 			}
 
 		} catch (Exception e) {
