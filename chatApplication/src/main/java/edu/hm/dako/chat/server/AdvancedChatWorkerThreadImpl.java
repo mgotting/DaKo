@@ -532,7 +532,9 @@ public class AdvancedChatWorkerThreadImpl extends AbstractWorkerThread {
 
 	// CREATED BY Matze K aus M // NOT Finisched!!
 	private void chatMessageResponseAction(ChatPDU receivedPdu) {
-		System.out.println("Server hat Confirm erhalten ..." + receivedPdu.getEventUserName() + " " + receivedPdu.getUserName() + "Wartelisteneinträge " + clients.getWaitListSize(receivedPdu.getEventUserName() );
+		System.out.println("Server hat Confirm erhalten ..." + receivedPdu.getEventUserName()
+				+ " " + receivedPdu.getUserName() + "Wartelisteneinträge "
+				+ clients.getWaitListSize(receivedPdu.getEventUserName()));
 		ClientListEntry client = null;
 		// TODO
 		// Three Steps to win !
