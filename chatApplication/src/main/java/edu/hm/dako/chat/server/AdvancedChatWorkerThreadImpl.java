@@ -154,7 +154,7 @@ public class AdvancedChatWorkerThreadImpl extends AbstractWorkerThread {
 
 			try {
 				// MGo und SSP: Response erst versenden, wenn Waitlist abgearbeitet
-				clients.getClient(userName).getConnection().send(responsePdu);
+				clients.getClient(receivedPdu.getEventUserName()).getConnection().send(responsePdu);
 			} catch (Exception e) {
 				log.debug("Senden einer Login-Response-PDU an " + receivedPdu.getEventUserName()
 						+ " fehlgeschlagen");
@@ -191,17 +191,8 @@ public class AdvancedChatWorkerThreadImpl extends AbstractWorkerThread {
 			clients.changeClientStatus(receivedPdu.getUserName(),
 					ClientConversationStatus.UNREGISTERING);
 			sendLoginListUpdateEvent(pdu);
-			serverGuiInterface.decrNumberOfLoggedInClients();
+			
 
-			try {
-				connection.send(pdu);
-				log.debug("Logout-Event-PDU an " + receivedPdu.getUserName());
-
-			} catch (Exception e) {
-				log.debug("Senden einer Logout-Event-PDU an " + receivedPdu.getUserName()
-						+ " nicth moeglich");
-				ExceptionHandler.logExceptionAndTerminate(e);
-			}
 
 			// clients.changeClientStatus(receivedPdu.getUserName(),
 			// ClientConversationStatus.UNREGISTERED);

@@ -112,14 +112,14 @@ public class AdvancedMessageListenerThreadImpl extends AbstractMessageListenerTh
 
 		try {
 			handleUserListEvent(receivedPdu);
-			// sendlogoutConfirmAction(receivedPdu);
+			sendlogoutConfirm(receivedPdu);
 		} catch (Exception e) {
 			ExceptionHandler.logException(e);
 		}
 	}
 
 	// RT
-	protected void sendlogoutConfirmAction(ChatPDU receivedPdu) {
+	protected void sendlogoutConfirm(ChatPDU receivedPdu) {
 		System.out.println("schickt logoutEventConfirm");
 		ChatPDU ConfirmPdu = ChatPDU.createLogoutEventConfirm(sharedClientData.userName,
 				receivedPdu);
@@ -235,7 +235,6 @@ public class AdvancedMessageListenerThreadImpl extends AbstractMessageListenerTh
 						// Meldung vom Server, dass sich die Liste der
 						// angemeldeten User erweitert hat
 						loginEventAction(receivedPdu);
-						loginConfirmAction(receivedPdu);
 
 						break;
 
@@ -243,7 +242,7 @@ public class AdvancedMessageListenerThreadImpl extends AbstractMessageListenerTh
 						// Meldung vom Server, dass sich die Liste der
 						// angemeldeten User veraendert hat
 						logoutEventAction(receivedPdu);
-						sendlogoutConfirmAction(receivedPdu);
+						
 
 						break;
 
@@ -279,14 +278,13 @@ public class AdvancedMessageListenerThreadImpl extends AbstractMessageListenerTh
 						// Meldung vom Server, dass sich die Liste der
 						// angemeldeten User erweitert hat
 						loginEventAction(receivedPdu);
-						loginConfirmAction(receivedPdu);
 						break;
 
 					case LOGOUT_EVENT:
 						// Meldung vom Server, dass sich die Liste der
 						// angemeldeten User veraendert hat
 						logoutEventAction(receivedPdu);
-						sendlogoutConfirmAction(receivedPdu);
+						
 						break;
 
 					default:
@@ -314,15 +312,13 @@ public class AdvancedMessageListenerThreadImpl extends AbstractMessageListenerTh
 						// Meldung vom Server, dass sich die Liste der
 						// angemeldeten User erweitert hat
 						loginEventAction(receivedPdu);
-						loginConfirmAction(receivedPdu);
-
 						break;
 
 					case LOGOUT_EVENT:
 						// Meldung vom Server, dass sich die Liste der
 						// angemeldeten User veraendert hat
 						logoutEventAction(receivedPdu);
-						sendlogoutConfirmAction(receivedPdu);
+						
 						break;
 
 					default:
