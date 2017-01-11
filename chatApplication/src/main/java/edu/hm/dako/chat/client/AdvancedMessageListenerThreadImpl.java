@@ -235,7 +235,6 @@ public class AdvancedMessageListenerThreadImpl extends AbstractMessageListenerTh
 						// Meldung vom Server, dass sich die Liste der
 						// angemeldeten User erweitert hat
 						loginEventAction(receivedPdu);
-						loginConfirmAction(receivedPdu);
 
 						break;
 
@@ -279,7 +278,6 @@ public class AdvancedMessageListenerThreadImpl extends AbstractMessageListenerTh
 						// Meldung vom Server, dass sich die Liste der
 						// angemeldeten User erweitert hat
 						loginEventAction(receivedPdu);
-						loginConfirmAction(receivedPdu);
 						break;
 
 					case LOGOUT_EVENT:
@@ -314,8 +312,6 @@ public class AdvancedMessageListenerThreadImpl extends AbstractMessageListenerTh
 						// Meldung vom Server, dass sich die Liste der
 						// angemeldeten User erweitert hat
 						loginEventAction(receivedPdu);
-						loginConfirmAction(receivedPdu);
-
 						break;
 
 					case LOGOUT_EVENT:
