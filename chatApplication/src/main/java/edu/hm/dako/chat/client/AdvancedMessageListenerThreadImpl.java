@@ -135,7 +135,7 @@ public class AdvancedMessageListenerThreadImpl extends AbstractMessageListenerTh
 
 	@Override
 	protected void chatMessageResponseAction(ChatPDU receivedPdu) {
-		System.out.println("Response erhalten bearbeitung beended");
+		System.out.println("Response erhalten bearbeitung beendet");
 
 		log.debug("Sequenznummer der Chat-Response-PDU " + receivedPdu.getUserName() + ": "
 				+ receivedPdu.getSequenceNumber() + ", Messagecounter: "
@@ -145,7 +145,6 @@ public class AdvancedMessageListenerThreadImpl extends AbstractMessageListenerTh
 				+ ", Benoetigte Serverzeit gleich nach Empfang der Response-Nachricht: "
 				+ receivedPdu.getServerTime() + " ns = " + receivedPdu.getServerTime() / 1000000
 				+ " ms");
-
 		if (receivedPdu.getSequenceNumber() == sharedClientData.messageCounter.get()) {
 
 			// Zuletzt gemessene Serverzeit fuer das Benchmarking
@@ -242,7 +241,6 @@ public class AdvancedMessageListenerThreadImpl extends AbstractMessageListenerTh
 						// Meldung vom Server, dass sich die Liste der
 						// angemeldeten User veraendert hat
 						logoutEventAction(receivedPdu);
-						
 
 						break;
 
@@ -284,7 +282,7 @@ public class AdvancedMessageListenerThreadImpl extends AbstractMessageListenerTh
 						// Meldung vom Server, dass sich die Liste der
 						// angemeldeten User veraendert hat
 						logoutEventAction(receivedPdu);
-						
+
 						break;
 
 					default:
@@ -318,7 +316,7 @@ public class AdvancedMessageListenerThreadImpl extends AbstractMessageListenerTh
 						// Meldung vom Server, dass sich die Liste der
 						// angemeldeten User veraendert hat
 						logoutEventAction(receivedPdu);
-						
+
 						break;
 
 					default:
