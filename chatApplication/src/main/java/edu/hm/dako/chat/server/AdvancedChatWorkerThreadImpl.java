@@ -226,7 +226,7 @@ public class AdvancedChatWorkerThreadImpl extends AbstractWorkerThread {
 				clients.changeClientStatus(receivedPdu.getEventUserName(),
 						ClientConversationStatus.UNREGISTERED);
 				clients.finish(receivedPdu.getEventUserName());
-				// clients.deleteClient(receivedPdu.getEventUserName());
+				//clients.deleteClient(receivedPdu.getEventUserName());
 			}
 
 		} catch (Exception e) {
