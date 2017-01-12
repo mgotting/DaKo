@@ -135,7 +135,6 @@ public class AdvancedMessageListenerThreadImpl extends AbstractMessageListenerTh
 
 	@Override
 	protected void chatMessageResponseAction(ChatPDU receivedPdu) {
-		System.out.println("Response erhalten bearbeitung beendet");
 
 		log.debug("Sequenznummer der Chat-Response-PDU " + receivedPdu.getUserName() + ": "
 				+ receivedPdu.getSequenceNumber() + ", Messagecounter: "
@@ -174,12 +173,8 @@ public class AdvancedMessageListenerThreadImpl extends AbstractMessageListenerTh
 		sharedClientData.eventCounter.getAndIncrement();
 
 		// ConfirmPDU erzeugen und Senden M.K.
-		System.out.println("Nachricht vom Server erhalten" + sharedClientData.userName
-				+ receivedPdu.getUserName());
 		ChatPDU ConfirmPDU = ChatPDU.createChatMessageEventConfirm(sharedClientData.userName,
 				receivedPdu);
-		System.out
-				.println("Fertig erstellte Confirm PDU  von :" + ConfirmPDU.getEventUserName());
 		try {
 			connection.send(ConfirmPDU);
 		} catch (Exception e) {
