@@ -81,6 +81,7 @@ public class AdvancedMessageListenerThreadImpl extends AbstractMessageListenerTh
 	 *          
 	 * @author MGo, SSP
 	 */
+	
 	protected void loginConfirmAction(ChatPDU receivedPdu) {
 		ChatPDU confirmPdu = ChatPDU.createLoginEventConfirm(sharedClientData.userName,
 				receivedPdu);
@@ -126,9 +127,15 @@ public class AdvancedMessageListenerThreadImpl extends AbstractMessageListenerTh
 		}
 	}
 
-	// RT
+	/**
+	 * Confirm-PDU erstellen und an den Server senden
+	 * 
+	 * @param receivedPdu
+	 *          erhaltende Pdu
+	 *          
+	 * @author RT
+	 */
 	protected void sendlogoutConfirm(ChatPDU receivedPdu) {
-		System.out.println("schickt logoutEventConfirm");
 		ChatPDU ConfirmPdu = ChatPDU.createLogoutEventConfirm(sharedClientData.userName,
 				receivedPdu);
 

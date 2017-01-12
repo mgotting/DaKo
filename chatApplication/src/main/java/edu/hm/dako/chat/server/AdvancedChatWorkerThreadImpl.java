@@ -197,24 +197,19 @@ public class AdvancedChatWorkerThreadImpl extends AbstractWorkerThread {
 					ClientConversationStatus.UNREGISTERING);
 			sendLoginListUpdateEvent(pdu);
 
-			// clients.changeClientStatus(receivedPdu.getUserName(),
-			// ClientConversationStatus.UNREGISTERED);
-			// serverGuiInterface.decrNumberOfLoggedInClients();
-			// clients.changeClientStatus(receivedPdu.getUserName(),
-			// ClientConversationStatus.UNREGISTERED);
-			// Logout Response senden
-			// sendLogoutResponse(receivedPdu.getUserName());
-			// Worker-Thread des Clients, der den Logout-Request gesendet
-			// hat, auch gleich zum Beenden markieren
-			// clients.changeClientStatus(receivedPdu.getUserName(),
-			// ClientConversationStatus.UNREGISTERED);
-
 		}
 	}
 
-	// RT
+	/**
+	 * Empfangene Confirm-Pdu bearbeiten, Response-Pdu an Client senden
+	 * 
+	 * @param receivedPdu
+	 *        erhaltende Pdu
+	 * 
+	 * @author RT
+	 */
+	
 	protected void logoutConfirmAction(ChatPDU receivedPdu) {
-		System.out.println("ist in logoutConfirmAction");
 		// confirms hoch zählen
 		clients.incrNumberOfReceivedChatEventConfirms(receivedPdu.getEventUserName());
 		try {
@@ -229,8 +224,7 @@ public class AdvancedChatWorkerThreadImpl extends AbstractWorkerThread {
 				clients.changeClientStatus(receivedPdu.getEventUserName(),
 						ClientConversationStatus.UNREGISTERED);
 				clients.finish(receivedPdu.getEventUserName());
-				//clients.deleteClient(receivedPdu.getEventUserName());
-			}
+				}
 
 		} catch (Exception e) {
 			log.debug("Senden einer Logout-Response-PDU an " + receivedPdu.getEventUserName()
