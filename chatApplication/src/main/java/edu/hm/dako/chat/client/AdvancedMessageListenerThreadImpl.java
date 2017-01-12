@@ -135,7 +135,6 @@ public class AdvancedMessageListenerThreadImpl extends AbstractMessageListenerTh
 
 	@Override
 	protected void chatMessageResponseAction(ChatPDU receivedPdu) {
-		System.out.println("Response erhalten bearbeitung beended");
 
 		log.debug("Sequenznummer der Chat-Response-PDU " + receivedPdu.getUserName() + ": "
 				+ receivedPdu.getSequenceNumber() + ", Messagecounter: "
@@ -145,7 +144,6 @@ public class AdvancedMessageListenerThreadImpl extends AbstractMessageListenerTh
 				+ ", Benoetigte Serverzeit gleich nach Empfang der Response-Nachricht: "
 				+ receivedPdu.getServerTime() + " ns = " + receivedPdu.getServerTime() / 1000000
 				+ " ms");
-
 		if (receivedPdu.getSequenceNumber() == sharedClientData.messageCounter.get()) {
 
 			// Zuletzt gemessene Serverzeit fuer das Benchmarking
@@ -175,12 +173,8 @@ public class AdvancedMessageListenerThreadImpl extends AbstractMessageListenerTh
 		sharedClientData.eventCounter.getAndIncrement();
 
 		// ConfirmPDU erzeugen und Senden M.K.
-		System.out.println("Nachricht vom Server erhalten" + sharedClientData.userName
-				+ receivedPdu.getUserName());
 		ChatPDU ConfirmPDU = ChatPDU.createChatMessageEventConfirm(sharedClientData.userName,
 				receivedPdu);
-		System.out
-				.println("Fertig erstellte Confirm PDU  von :" + ConfirmPDU.getEventUserName());
 		try {
 			connection.send(ConfirmPDU);
 		} catch (Exception e) {
@@ -235,7 +229,6 @@ public class AdvancedMessageListenerThreadImpl extends AbstractMessageListenerTh
 						// Meldung vom Server, dass sich die Liste der
 						// angemeldeten User erweitert hat
 						loginEventAction(receivedPdu);
-						loginConfirmAction(receivedPdu);
 
 						break;
 
@@ -243,7 +236,6 @@ public class AdvancedMessageListenerThreadImpl extends AbstractMessageListenerTh
 						// Meldung vom Server, dass sich die Liste der
 						// angemeldeten User veraendert hat
 						logoutEventAction(receivedPdu);
-						
 
 						break;
 
@@ -279,14 +271,13 @@ public class AdvancedMessageListenerThreadImpl extends AbstractMessageListenerTh
 						// Meldung vom Server, dass sich die Liste der
 						// angemeldeten User erweitert hat
 						loginEventAction(receivedPdu);
-						loginConfirmAction(receivedPdu);
 						break;
 
 					case LOGOUT_EVENT:
 						// Meldung vom Server, dass sich die Liste der
 						// angemeldeten User veraendert hat
 						logoutEventAction(receivedPdu);
-						
+
 						break;
 
 					default:
@@ -314,15 +305,13 @@ public class AdvancedMessageListenerThreadImpl extends AbstractMessageListenerTh
 						// Meldung vom Server, dass sich die Liste der
 						// angemeldeten User erweitert hat
 						loginEventAction(receivedPdu);
-						loginConfirmAction(receivedPdu);
-
 						break;
 
 					case LOGOUT_EVENT:
 						// Meldung vom Server, dass sich die Liste der
 						// angemeldeten User veraendert hat
 						logoutEventAction(receivedPdu);
-						
+
 						break;
 
 					default:

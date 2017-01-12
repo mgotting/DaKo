@@ -154,7 +154,8 @@ public class AdvancedChatWorkerThreadImpl extends AbstractWorkerThread {
 
 			try {
 				// MGo und SSP: Response erst versenden, wenn Waitlist abgearbeitet
-				clients.getClient(userName).getConnection().send(responsePdu);
+				clients.getClient(receivedPdu.getEventUserName()).getConnection()
+						.send(responsePdu);
 			} catch (Exception e) {
 				log.debug("Senden einer Login-Response-PDU an " + receivedPdu.getEventUserName()
 						+ " fehlgeschlagen");
@@ -191,8 +192,6 @@ public class AdvancedChatWorkerThreadImpl extends AbstractWorkerThread {
 			clients.changeClientStatus(receivedPdu.getUserName(),
 					ClientConversationStatus.UNREGISTERING);
 			sendLoginListUpdateEvent(pdu);
-			
-
 
 			// clients.changeClientStatus(receivedPdu.getUserName(),
 			// ClientConversationStatus.UNREGISTERED);
@@ -243,21 +242,28 @@ public class AdvancedChatWorkerThreadImpl extends AbstractWorkerThread {
 	@Override
 	// Matze K aus M
 	protected void chatMessageRequestAction(ChatPDU receivedPdu) {
-		System.out.println("Server bearbeitet");
+		// Status Nachricht absetzen
 		ClientListEntry client = null;
+		// Setzen der Server Startzeit
 		clients.setRequestStartTime(receivedPdu.getUserName(), startTime);
+
+		// Erhöhen des Zählers der Eingegangenen Chat Nachrichten
 		clients.incrNumberOfReceivedChatMessages(receivedPdu.getUserName());
+
+		// Erhöhen der GUI Nachrichten-Requests Server GUI
 		serverGuiInterface.incrNumberOfRequests();
+
+		// Log führen über eingegangene Nachricht
 		log.debug("Chat-Message-Request-PDU von " + receivedPdu.getUserName()
 				+ " mit Sequenznummer " + receivedPdu.getSequenceNumber() + " empfangen");
 
+		// Bearbeiten der angekommen nachricht
+		// 1.tens Prüfung ob Client Existent
 		if (!clients.existsClient(receivedPdu.getUserName())) {
 			log.debug("User nicht in Clientliste: " + receivedPdu.getUserName());
 		} else {
 			// zuerst Waitlist erstellen mit registering und registered clients
 			clients.createWaitList(receivedPdu.getUserName());
-			System.out.println(
-					"Waitlist erstellt mit:" + clients.getWaitListSize(receivedPdu.getUserName()));
 			// Liste der betroffenen Clients ermitteln
 			Vector<String> sendList = clients.getRegisteredClientNameList();
 			ChatPDU pdu = ChatPDU.createChatMessageEventPdu(userName, receivedPdu);
@@ -270,7 +276,9 @@ public class AdvancedChatWorkerThreadImpl extends AbstractWorkerThread {
 							&& (client.getStatus() != ClientConversationStatus.UNREGISTERED)) {
 						pdu.setUserName(client.getUserName());
 						client.getConnection().send(pdu);
+
 						log.debug("Chat-Event-PDU an " + client.getUserName() + " gesendet");
+						// Zähler Erhöhen für gesende Chat-Event-PDU
 						clients.incrNumberOfSentChatEvents(client.getUserName());
 						eventCounter.getAndIncrement();
 						log.debug(userName + ": EventCounter erhoeht = " + eventCounter.get()
@@ -284,29 +292,6 @@ public class AdvancedChatWorkerThreadImpl extends AbstractWorkerThread {
 					ExceptionHandler.logException(e);
 				}
 			}
-			// Bis hier Message an Clients verschickt jetzt erfolgt direkt der
-			// Response
-			/*
-			 * client = clients.getClient(receivedPdu.getUserName()); if (client !=
-			 * null) { ChatPDU responsePdu = ChatPDU.createChatMessageResponsePdu(
-			 * receivedPdu.getUserName(), 0, 0, 0, 0,
-			 * client.getNumberOfReceivedChatMessages(),
-			 * receivedPdu.getClientThreadName(), (System.nanoTime() -
-			 * client.getStartTime()));
-			 * 
-			 * if (responsePdu.getServerTime() / 1000000 > 100) {
-			 * log.debug(Thread.currentThread().getName() +
-			 * ", Benoetigte Serverzeit vor dem Senden der Response-Nachricht > 100 ms: "
-			 * + responsePdu.getServerTime() + " ns = " + responsePdu.getServerTime()
-			 * / 1000000 + " ms"); }
-			 * 
-			 * try { client.getConnection().send(responsePdu); log.debug(
-			 * "Chat-Message-Response-PDU an " + receivedPdu.getUserName() +
-			 * " gesendet"); } catch (Exception e) { log.debug(
-			 * "Senden einer Chat-Message-Response-PDU an " + client.getUserName() +
-			 * " nicht moeglich"); ExceptionHandler.logExceptionAndTerminate(e); } }
-			 * log.debug("Aktuelle Laenge der Clientliste: " + clients.size());
-			 */
 		}
 	}
 
@@ -502,7 +487,6 @@ public class AdvancedChatWorkerThreadImpl extends AbstractWorkerThread {
 				break;
 			case CHAT_MESSAGE_EVENT_CONFIRM:
 				// Message Response vom Client empfangen
-				System.out.println("Server hat MessageConfirm erhalten");
 				chatMessageResponseAction(receivedPdu);
 				break;
 
@@ -527,24 +511,20 @@ public class AdvancedChatWorkerThreadImpl extends AbstractWorkerThread {
 
 	// CREATED BY Matze K aus M // NOT Finisched!!
 	private void chatMessageResponseAction(ChatPDU receivedPdu) {
-		System.out.println("Server hat Confirm erhalten ..." + receivedPdu.getEventUserName()
-				+ " " + receivedPdu.getUserName() + "Wartelisteneinträge "
-				+ clients.getWaitListSize(receivedPdu.getEventUserName()));
 		ClientListEntry client = null;
-		// TODO
-		// Three Steps to win !
-		// Delete Client from List
+		// Zähler für empfangene Confirms Erhöhen
+		clients.incrNumberOfReceivedChatEventConfirms(receivedPdu.getUserName());
+		// Delete Client from WaitList
 		clients.deleteWaitListEntry(receivedPdu.getEventUserName(),
 				receivedPdu.getUserName());
 
 		// Proof Client List length AND Delete List if list is empty.
-		System.out.println(clients.getWaitListSize(receivedPdu.getEventUserName()));
 		if (clients.getWaitListSize(receivedPdu.getEventUserName()) == 0) {
 			clients.deleteWaitList(receivedPdu.getEventUserName());
 			client = clients.getClient(receivedPdu.getEventUserName());
 			if (client != null) {
 				ChatPDU responsePdu = ChatPDU.createChatMessageResponsePdu(
-						receivedPdu.getEventUserName(), 0, 0, 0, 0,
+						receivedPdu.getEventUserName(), 0, 0, 1, 0,
 						client.getNumberOfReceivedChatMessages(), receivedPdu.getClientThreadName(),
 						(System.nanoTime() - client.getStartTime()));
 
