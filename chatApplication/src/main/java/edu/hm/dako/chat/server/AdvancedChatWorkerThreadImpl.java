@@ -543,8 +543,6 @@ public class AdvancedChatWorkerThreadImpl extends AbstractWorkerThread {
 				+ " " + receivedPdu.getUserName() + "Wartelisteneinträge "
 				+ clients.getWaitListSize(receivedPdu.getEventUserName()));
 		ClientListEntry client = null;
-		// TODO
-
 		// Zähler für empfangene Confirms Erhöhen
 		clients.incrNumberOfReceivedChatEventConfirms(receivedPdu.getUserName());
 		// Delete Client from WaitList

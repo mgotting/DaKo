@@ -12,9 +12,9 @@
   <children>
     <TextField fx:id="txtUsername" prefHeight="25.0" prefWidth="150.0" promptText="Benutzername" onKeyPressed="#handleKeyPressed" />
       <Separator layoutX="15.0" layoutY="147.0" prefWidth="200.0" />
-      <Label fx:id="lblIP" prefHeight="17.0" prefWidth="200.0" text="Servername oder IP-Adresse: " />
+      <Label fx:id="lblIP" prefHeight="17.0" prefWidth="200.0" text="IP-Adresse des Servers: " />
     <TextField fx:id="txtServername" prefHeight="25.0" prefWidth="185.0" promptText="127.0.0.1" text="127.0.0.1" onKeyPressed="#handleKeyPressed"/>
-      <Label fx:id="lblServerPort" prefHeight="17.0" prefWidth="99.0" text="ServerPort" />
+      <Label fx:id="lblServerPort" prefHeight="17.0" prefWidth="99.0" text="Serverport:" />
     <TextField fx:id="txtServerPort" prefHeight="25.0" prefWidth="185.0" promptText="50000" text="50000" onKeyPressed="#handleKeyPressed"/>
       <Label nodeOrientation="LEFT_TO_RIGHT" prefHeight="17.0" prefWidth="99.0" text="Serverauswahl:" />
       <ComboBox fx:id="comboServerType" prefHeight="25.0" prefWidth="2000.0" onKeyPressed="#handleKeyPressed">
