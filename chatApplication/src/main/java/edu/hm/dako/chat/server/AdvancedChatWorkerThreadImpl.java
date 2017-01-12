@@ -481,14 +481,14 @@ public class AdvancedChatWorkerThreadImpl extends AbstractWorkerThread {
 				chatMessageRequestAction(receivedPdu);
 				break;
 
-			case LOGOUT_REQUEST:
-				// Logout-Request vom Client empfangen
-				logoutRequestAction(receivedPdu);
-				break;
 			case CHAT_MESSAGE_EVENT_CONFIRM:
 				// Message Response vom Client empfangen
 				chatMessageResponseAction(receivedPdu);
+				break;case LOGOUT_REQUEST:
+				// Logout-Request vom Client empfangen
+				logoutRequestAction(receivedPdu);
 				break;
+			
 
 			case LOGOUT_EVENT_CONFIRM:
 				logoutConfirmAction(receivedPdu);
