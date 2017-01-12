@@ -16,7 +16,7 @@ import edu.hm.dako.chat.connection.EndOfFileException;
 /**
  * Worker-Thread zur serverseitigen Bedienung einer Session mit einem Client.
  * Jedem Chat-Client wird serverseitig ein Worker-Thread zugeordnet. Kopie
- * Advanced von Gotti
+ * Advanced von MGo
  * 
  * @author
  *
@@ -136,24 +136,28 @@ public class AdvancedChatWorkerThreadImpl extends AbstractWorkerThread {
 			}
 		}
 	}
-
-	// MGo, SSP: Methode, die empfangene Confirm Nachricht bearbeitet
+	
+	/**
+	 * Empfangene Confirm-Pdu bearbeiten, Response-Pdu erstellen und an Client senden
+	 * 
+	 * @param receivedPdu
+	 *        erhaltende Pdu
+	 * 
+	 * @author MGo, SSP
+	 */
 	protected void loginConfirmAction(ChatPDU receivedPdu) {
-		// confirms zählen
-		clients.incrNumberOfReceivedChatEventConfirms(receivedPdu.getEventUserName()); // RT
+		// confirms zählen RT
+		clients.incrNumberOfReceivedChatEventConfirms(receivedPdu.getEventUserName());
 
 		// Client von dem PDU kommt aus Warteliste des Request Clients löschen
-		System.out.println(
-				receivedPdu.getEventUserName() + " UserName: " + receivedPdu.getUserName());
 		clients.deleteWaitListEntry(receivedPdu.getEventUserName(),
 				receivedPdu.getUserName());
 		if (clients.getWaitListSize(receivedPdu.getEventUserName()) == 0) {
-			// Login Response senden
+			// Login Response vorbereiten
 			ChatPDU responsePdu = ChatPDU.createLoginResponsePdu(receivedPdu.getEventUserName(),
 					receivedPdu);
-
 			try {
-				// MGo und SSP: Response erst versenden, wenn Waitlist abgearbeitet
+				// MGo und SSP: Response erst versenden, wenn Waitlist leer
 				clients.getClient(receivedPdu.getEventUserName()).getConnection()
 						.send(responsePdu);
 			} catch (Exception e) {
@@ -464,16 +468,11 @@ public class AdvancedChatWorkerThreadImpl extends AbstractWorkerThread {
 			case LOGIN_EVENT_CONFIRM:
 				// MGo, SSP: Login-Confirm vom Client empfangen
 				loginConfirmAction(receivedPdu);
-				System.out.println("Confirm erhalten von UserName: " + receivedPdu.getUserName()
-						+ " EventUserName: " + receivedPdu.getEventUserName());
 				break;
 
 			case LOGIN_REQUEST:
 				// Login-Request vom Client empfangen
 				loginRequestAction(receivedPdu);
-				System.out
-						.println("Login Request erhalten von UserName: " + receivedPdu.getUserName()
-								+ " EventUserName: " + receivedPdu.getEventUserName());
 				break;
 
 			case CHAT_MESSAGE_REQUEST:
@@ -484,21 +483,18 @@ public class AdvancedChatWorkerThreadImpl extends AbstractWorkerThread {
 			case CHAT_MESSAGE_EVENT_CONFIRM:
 				// Message Response vom Client empfangen
 				chatMessageResponseAction(receivedPdu);
-				break;case LOGOUT_REQUEST:
+				break;
+				
+			case LOGOUT_REQUEST:
 				// Logout-Request vom Client empfangen
 				logoutRequestAction(receivedPdu);
 				break;
 			
-
 			case LOGOUT_EVENT_CONFIRM:
 				logoutConfirmAction(receivedPdu);
-				System.out
-						.println("Logout-Confirm erhalten von UserName: " + receivedPdu.getUserName()
-								+ " EventUserName: " + receivedPdu.getEventUserName());
 				break;
 
 			default:
-				System.out.println("falsche PDU empfangen");
 				log.debug("Falsche PDU empfangen von Client: " + receivedPdu.getUserName()
 						+ ", PduType: " + receivedPdu.getPduType());
 				break;

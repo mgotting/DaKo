@@ -10,7 +10,7 @@ import edu.hm.dako.chat.connection.Connection;
 
 /**
  * Thread wartet auf ankommende Nachrichten vom Server und bearbeitet diese.
- * Kopie von AdvancedMessageListenerThreadImpl von Gotti.
+ * Kopie von AdvancedMessageListenerThreadImpl von MGo.
  * 
  * @author Peter Mandl
  *
@@ -65,6 +65,7 @@ public class AdvancedMessageListenerThreadImpl extends AbstractMessageListenerTh
 
 		try {
 			handleUserListEvent(receivedPdu);
+			//eingefügt von MGo, SSP: Behandlung erhaltene Pdu
 			loginConfirmAction(receivedPdu);
 		} catch (Exception e) {
 			ExceptionHandler.logException(e);
@@ -72,7 +73,14 @@ public class AdvancedMessageListenerThreadImpl extends AbstractMessageListenerTh
 
 	}
 
-	// MGo und SSP
+	/**
+	 * Confirm-PDU erstellen und an den Server senden
+	 * 
+	 * @param receivedPdu
+	 *          erhaltende Pdu
+	 *          
+	 * @author MGo, SSP
+	 */
 	protected void loginConfirmAction(ChatPDU receivedPdu) {
 		ChatPDU confirmPdu = ChatPDU.createLoginEventConfirm(sharedClientData.userName,
 				receivedPdu);
@@ -221,22 +229,18 @@ public class AdvancedMessageListenerThreadImpl extends AbstractMessageListenerTh
 					case LOGIN_RESPONSE:
 						// Login-Bestaetigung vom Server angekommen
 						loginResponseAction(receivedPdu);
-
 						break;
 
-					// zweite Action Ausführung eingefügt von MGo und SSP
 					case LOGIN_EVENT:
 						// Meldung vom Server, dass sich die Liste der
 						// angemeldeten User erweitert hat
 						loginEventAction(receivedPdu);
-
 						break;
 
 					case LOGOUT_EVENT:
 						// Meldung vom Server, dass sich die Liste der
 						// angemeldeten User veraendert hat
 						logoutEventAction(receivedPdu);
-
 						break;
 
 					case CHAT_MESSAGE_EVENT:
@@ -255,7 +259,6 @@ public class AdvancedMessageListenerThreadImpl extends AbstractMessageListenerTh
 					switch (receivedPdu.getPduType()) {
 
 					case CHAT_MESSAGE_RESPONSE:
-
 						// Die eigene zuletzt gesendete Chat-Nachricht wird vom
 						// Server bestaetigt.
 						chatMessageResponseAction(receivedPdu);
@@ -266,7 +269,6 @@ public class AdvancedMessageListenerThreadImpl extends AbstractMessageListenerTh
 						chatMessageEventAction(receivedPdu);
 						break;
 
-					// zweite Action Ausführung angelegt von MGo und SSP
 					case LOGIN_EVENT:
 						// Meldung vom Server, dass sich die Liste der
 						// angemeldeten User erweitert hat
@@ -300,7 +302,6 @@ public class AdvancedMessageListenerThreadImpl extends AbstractMessageListenerTh
 						logoutResponseAction(receivedPdu);
 						break;
 
-					// zweite Action Ausführung angelegt von MGo und SSP
 					case LOGIN_EVENT:
 						// Meldung vom Server, dass sich die Liste der
 						// angemeldeten User erweitert hat
